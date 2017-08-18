@@ -1,0 +1,8 @@
+In this project contain five main java classes to fulfil requirements. Also this contain two test classes.
+The class Caller.jave can use as client class which anyone can register a service and start.
+That class contains an example how to register the service
+User can register class using “registerService( Service service )” method and it will return relevant service id .
+User can terminate the service by using the method “stopService( int id )”.
+In this implementation when server status changes it will print that using system out . It can enhance to pass out put to end user.
+Also this needs to update to use logging framework for log required information.
+For test classes it’s not use Mocking which needs to use for test cases that link to methods that have dependency.

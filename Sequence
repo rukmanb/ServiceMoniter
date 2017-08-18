@@ -1,0 +1,39 @@
+//  https://www.websequencediagrams.com/
+
+participant "Caller" as cal
+participant "Monitor" as mon
+participant "Service" as ser
+
+cal -> mon : Register Service
+    loop Check connection
+    alt Not in outage period
+        alt Time to run according to polling frequency
+                mon -> ser : Connection Request
+                ser --> mon : Connection Response
+                alt Success  Response
+
+                    mon -> mon : Change Current Status to UP
+                else Fail Response
+                    mon -> mon : Change Current Status to DOWN
+                end
+        end
+        alt End of grace period
+            alt Grace period less than polling frequency
+                mon -> ser : Connection Request
+                 ser --> mon : Connection Response
+                 alt Success  Response
+
+                    mon -> mon : Change Current Status to UP
+                else Fail Response
+                    mon -> mon : Change Current Status to DOWN
+                end
+            end
+
+            alt Status Change Previous and Current
+                mon --> cal : Connection Status
+                 mon -> mon : Set Previous Status
+            end
+
+        end
+    end
+    end
