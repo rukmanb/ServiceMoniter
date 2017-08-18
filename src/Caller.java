@@ -13,7 +13,7 @@ public class Caller
         {
             Monitor.init();
 
-            Service service = new Service( "localhost", 3306, 5 * 1000, 7 * 1000 );
+            Service service = new Service( "localhost", 3306, 25 * 1000, 6 * 1000 );
             Service service2 = new Service( "localhost", 3306, 15 * 1000, 3 * 1000 );
 
             Calendar calendar = Calendar.getInstance();
