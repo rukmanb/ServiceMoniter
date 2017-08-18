@@ -10,11 +10,13 @@ public class ConnectionChecker implements Runnable
     private ServiceAccessHandler handler;
     private long lastRunTime;
     private long startTime;
+    private int connected;
 
     @Override public void run()
     {
         lastRunTime = System.currentTimeMillis();
         startTime = System.currentTimeMillis();
+        service.setLastUpdateTime( System.currentTimeMillis() );
 
         while( true )
         {
@@ -30,7 +32,7 @@ public class ConnectionChecker implements Runnable
     {
         if( !service.checkOutage() )
         {
-            int connected = service.getStatus();
+
             if( eligibleToRun() )
             {
                 connected = checkConnection() ? Service.SERVICE_UP : Service.SERVICE_DOWN;
@@ -39,6 +41,8 @@ public class ConnectionChecker implements Runnable
             }
             if( eligibleToUpdate() )
             {
+                //additional check when grace period les than polling frequency
+                // it validate whether
                 if( validateUpdateAndRunTime() )
                 {
                     connected = checkConnection() ? Service.SERVICE_UP : Service.SERVICE_DOWN;
@@ -73,6 +77,7 @@ public class ConnectionChecker implements Runnable
     {
         this.service = service;
         this.handler = serviceHandler;
+        this.connected = service.getStatus();
     }
 
     public boolean validateUpdateAndRunTime()
@@ -94,26 +99,13 @@ public class ConnectionChecker implements Runnable
         boolean eligibility = false;
         long currentTime = System.currentTimeMillis();
 
+        //initial check and polling frequency
         if( ( currentTime - lastRunTime >= service.getCheckFrequency() ) || ( currentTime - startTime == 0 ) )
         {
             eligibility = true;
+
         }
-        else
-        {
-            try
-            {
-                if( !Thread.currentThread().isInterrupted() )
-                {
-                    Thread.sleep( service.getCheckFrequency() );
-                }
-            }
-            catch( InterruptedException e )
-            {
-                Thread.currentThread().interrupt();
-                // need to log error with logger framework
-                // e.printStackTrace();
-            }
-        }
+
 
         // check whether same service ( ip and port) should not poll  more frequently than once a second.
         eligibility = eligibility && handler.checkEligibility();

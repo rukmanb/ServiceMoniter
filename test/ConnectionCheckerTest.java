@@ -19,51 +19,6 @@ public class ConnectionCheckerTest
         accessTimes = getHandler();
     }
 
-    /* todo
-       in this method  checker.checkServiceStatus();  checks the status of service
-       by creating real time connection to the service. Which is not the proper way to use in test case.
-       It needs to "Mock" the connecting method checkConnection() and run the test cse */
-
-    @Test public void testCheckServiceStatus() throws Exception
-    {
-
-        // initial run of the thread
-        updateLastAccessTime( 2000 );
-        ConnectionChecker checker = new ConnectionChecker( service, accessTimes );
-        checker.setStartTime( System.currentTimeMillis() );
-        checker.setLastRunTime( System.currentTimeMillis() );
-        checker.checkServiceStatus();
-        assertTrue( "Initial checker service start ", ( service.getStatus() == Service.SERVICE_DOWN || service.getStatus() == Service.SERVICE_UP ) );
-
-        // Iteration  that less than both polling frequency  and grace period
-        updateLastAccessTime( 2000 );
-        service.setStatus( Service.SERVICE_UNKNOWN );
-        service.setLastUpdateTime( System.currentTimeMillis() - 5000 );
-        checker.setStartTime( System.currentTimeMillis() - 3000 );
-        checker.setLastRunTime( System.currentTimeMillis() - 1000 );
-        checker.checkServiceStatus();
-        assertTrue( "Status not going to change ", service.getStatus() == Service.SERVICE_UNKNOWN );
-
-        // Iteration  that greater than polling frequency. but less than grace period
-        updateLastAccessTime( 2000 );
-        service.setStatus( Service.SERVICE_UNKNOWN );
-        service.setLastUpdateTime( System.currentTimeMillis() - 5000 );
-        checker.setStartTime( System.currentTimeMillis() - 3000 );
-        checker.setLastRunTime( System.currentTimeMillis() - 6000 );
-        checker.checkServiceStatus();
-        assertTrue( "Status not going to change due to grace period. But check the connection ", service.getStatus() == Service.SERVICE_UNKNOWN );
-
-        // Iteration  that greater than both polling frequency and grace period
-        updateLastAccessTime( 2000 );
-        service.setStatus( Service.SERVICE_UNKNOWN );
-        service.setLastUpdateTime( System.currentTimeMillis() - 35000 );
-        checker.setStartTime( System.currentTimeMillis() - 3000 );
-        checker.setLastRunTime( System.currentTimeMillis() - 6000 );
-        checker.checkServiceStatus();
-        assertTrue( "Status need to change to UP or DOWN ", ( service.getStatus() == Service.SERVICE_DOWN || service.getStatus() == Service.SERVICE_UP ) );
-
-
-    }
 
     @Test public void testEligibleToUpdate() throws Exception
     {
@@ -144,6 +99,52 @@ public class ConnectionCheckerTest
         updateLastAccessTime( 1010 );
         b = checker.eligibleToRun();
         assertTrue( "Now should be true last access time of service is greater than 1s   ", b );
+
+    }
+
+      /* todo
+       in this method  checker.checkServiceStatus();  checks the status of service
+       by creating real time connection to the service. Which is not the proper way to use in test case.
+       It needs to "Mock" the connecting method checkConnection() and run the test cse */
+
+    @Test public void testCheckServiceStatus() throws Exception
+    {
+
+        // initial run of the thread
+        updateLastAccessTime( 2000 );
+        ConnectionChecker checker = new ConnectionChecker( service, accessTimes );
+        checker.setStartTime( System.currentTimeMillis() );
+        checker.setLastRunTime( System.currentTimeMillis() );
+        checker.checkServiceStatus();
+        assertTrue( "Initial checker service start ", ( service.getStatus() == Service.SERVICE_DOWN || service.getStatus() == Service.SERVICE_UP ) );
+
+        // Iteration  that less than both polling frequency  and grace period
+        updateLastAccessTime( 2000 );
+        service.setStatus( Service.SERVICE_UNKNOWN );
+        service.setLastUpdateTime( System.currentTimeMillis() - 5000 );
+        checker.setStartTime( System.currentTimeMillis() - 3000 );
+        checker.setLastRunTime( System.currentTimeMillis() - 1000 );
+        checker.checkServiceStatus();
+        assertTrue( "Status not going to change ", service.getStatus() == Service.SERVICE_UNKNOWN );
+
+        // Iteration  that greater than polling frequency. but less than grace period
+        updateLastAccessTime( 2000 );
+        service.setStatus( Service.SERVICE_UNKNOWN );
+        service.setLastUpdateTime( System.currentTimeMillis() - 5000 );
+        checker.setStartTime( System.currentTimeMillis() - 3000 );
+        checker.setLastRunTime( System.currentTimeMillis() - 6000 );
+        checker.checkServiceStatus();
+        assertTrue( "Status not going to change due to grace period. But check the connection ", service.getStatus() == Service.SERVICE_UNKNOWN );
+
+        // Iteration  that greater than both polling frequency and grace period
+        updateLastAccessTime( 2000 );
+        service.setStatus( Service.SERVICE_UNKNOWN );
+        service.setLastUpdateTime( System.currentTimeMillis() - 35000 );
+        checker.setStartTime( System.currentTimeMillis() - 3000 );
+        checker.setLastRunTime( System.currentTimeMillis() - 6000 );
+        checker.checkServiceStatus();
+        assertTrue( "Status need to change to UP or DOWN ", ( service.getStatus() == Service.SERVICE_DOWN || service.getStatus() == Service.SERVICE_UP ) );
+
 
     }
 

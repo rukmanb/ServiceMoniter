@@ -24,9 +24,9 @@ public class Monitor
     public static int registerService( Service service )
     {
 
-        if(!validateService( service ))
+        if( !validateService( service ) )
         {
-            return  -1;
+            return -1;
         }
         service.setServiceId( serviceId++ );
         services.add( service );
@@ -43,12 +43,13 @@ public class Monitor
 
     }
 
-    private static boolean validateService(Service service)
+    private static boolean validateService( Service service )
     {
 
         return !( service.getIp() == null || service.getIp().trim().length() == 0 || service.getPort() <= 0 || service.getGraceTime() <= 0 || service.getCheckFrequency() <= 0 );
 
     }
+
     private static void checkHandler( Service service )
     {
         if( !serviceAccessTimes.containsKey( service.getKey() ) )
@@ -63,7 +64,6 @@ public class Monitor
         ExecutorService executorService = checkerMap.get( id );
         if( executorService != null )
         {
-            System.out.println("ask to shutdown");
             executorService.shutdownNow();
         }
     }

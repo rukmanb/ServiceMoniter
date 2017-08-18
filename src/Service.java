@@ -31,7 +31,7 @@ public class Service
         this.status = Service.SERVICE_UNKNOWN;
     }
 
-    public Service( String ip, int port, long graceTime,  long checkFrequency, Time outageFrom, Time outageTo )
+    public Service( String ip, int port, long graceTime, long checkFrequency, Time outageFrom, Time outageTo )
     {
         this.ip = ip;
         this.port = port;
@@ -155,10 +155,10 @@ public class Service
         if( outageFrom != null && outageTo != null && outageFrom.isValid() && outageTo.isValid() )
         {
             Calendar currentCal = Calendar.getInstance();
-            long considerFromTime = outageFrom.getCalenderTime().after( currentCal )? currentCal.getTimeInMillis():outageFrom.getCalenderTime().getTimeInMillis();
+            long considerFromTime = outageFrom.getCalenderTime().after( currentCal ) ? currentCal.getTimeInMillis() : outageFrom.getCalenderTime().getTimeInMillis();
             return outageTo.getCalenderTime().getTimeInMillis() - considerFromTime;
         }
-      return -1;
+        return -1;
     }
 
 
@@ -181,11 +181,11 @@ public class Service
     {
         if( this.status != newStatus )
         {
-            System.out.println( " Status change " + System.currentTimeMillis() );
-            System.out.println( "Service " + getKey() + " Status Change from " + getServiceStatus( this.status ) + " to " + getServiceStatus( newStatus ) );
+            // this implementation its just print the status change. We can introduce mechanism to pass to the caller
+            System.out.println( "Service " + getKey() + "_" + serviceId + " Status Change from " + getServiceStatus( this.status ) + " to " + getServiceStatus( newStatus ) );
             setStatus( newStatus );
-            setLastUpdateTime( System.currentTimeMillis() );
         }
+        setLastUpdateTime( System.currentTimeMillis() );
     }
 
     public int getServiceId()
