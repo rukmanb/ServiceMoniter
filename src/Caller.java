@@ -21,7 +21,6 @@ public class Caller
             int minute = calendar.get( Calendar.MINUTE );
 
 
-            //  current time fall into outage period
             Time from = new Time( hour, ( minute + 2 ) );
             Time to = new Time( hour, ( minute + 4 ) );
             service.setOutageFrom( from );
